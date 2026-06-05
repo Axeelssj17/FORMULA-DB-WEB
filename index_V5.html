@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FÓRMULA DB — F1 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#e8002d;--dark:#050505;--card:rgba(11,11,13,.75);
+  --border:rgba(255,255,255,.07);--text:#f0f0f0;--muted:rgba(255,255,255,.48);
+  --r:18px;--ease:.2s cubic-bezier(.4,0,.2,1);
+  --t1:#FF8000;--t2:#1E3D8F;--t3:#00D2BE;--t4:#E8002D;
+  --t5:#6692FF;--t6:#37BEDD;--t7:#B6BABD;--t8:#358C75;--t9:#52E252;--t10:#FF87BC;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--dark);color:var(--text);
+  min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* VIDEO FONDO */
+#vbg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#vbg video{width:100%;height:100%;object-fit:cover;filter:brightness(.4) saturate(.6);transition:filter .7s}
+body.inner #vbg video{filter:brightness(.12) saturate(.4)}
+
+/* NAVBAR */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:58px;display:flex;
+  align-items:center;justify-content:space-between;padding:0 1.75rem;
+  background:rgba(5,5,5,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-logo{height:32px;width:auto;cursor:pointer;
+  filter:drop-shadow(0 0 10px rgba(232,0,45,.5));transition:filter var(--ease)}
+.nav-logo:hover{filter:drop-shadow(0 0 16px rgba(232,0,45,.8))}
+.nav-links{display:flex;gap:.05rem;list-style:none;align-items:center}
+.nav-links a{padding:6px 10px;border-radius:8px;font-size:.7rem;font-weight:700;
+  letter-spacing:.6px;text-transform:uppercase;text-decoration:none;
+  color:var(--muted);transition:all var(--ease);white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(232,0,45,.22)}
+.nav-links a.active{border-bottom:2px solid var(--red)}
+.nav-right{display:flex;align-items:center;gap:.6rem}
+#btn-login{display:flex;align-items:center;gap:.45rem;padding:6px 14px;border-radius:20px;
+  background:rgba(255,255,255,.07);border:1px solid var(--border);
+  color:var(--text);font-size:.72rem;font-weight:700;cursor:pointer;transition:all var(--ease)}
+#btn-login:hover{background:rgba(255,255,255,.13)}
+#user-av{width:28px;height:28px;border-radius:50%;border:2px solid var(--red);
+  display:none;object-fit:cover;cursor:pointer}
+#btn-out{display:none;padding:4px 10px;border-radius:6px;
+  background:rgba(232,0,45,.18);border:1px solid rgba(232,0,45,.3);
+  color:#ff6b6b;font-size:.7rem;font-weight:700;cursor:pointer}
+
+/* LAYOUT */
+#main{position:relative;z-index:1;padding-top:58px;min-height:100vh}
+.section{display:none}
+.section.active{display:block;animation:fu .25s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{padding:2.25rem 2rem 5rem;max-width:1380px;margin:0 auto}
+
+/* PAGE HEADER */
+.ph{margin-bottom:1.75rem}
+.ph h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);
+  font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.ph .ln{display:inline-block;width:40px;height:4px;background:var(--red);
+  border-radius:2px;margin-top:6px}
+.ph p{color:var(--muted);font-size:.83rem;margin-top:.35rem}
+
+/* HOME */
+#sec-home{min-height:100vh;display:flex;flex-direction:column}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:3rem 1.5rem 2rem;gap:1.2rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;padding:5px 16px;
+  border-radius:99px;border:1px solid rgba(232,0,45,.4);background:rgba(232,0,45,.08);
+  font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red)}
+.hero-logo{height:88px;width:auto;filter:drop-shadow(0 0 24px rgba(232,0,45,.55));margin-bottom:.4rem}
+.hero-sub{font-size:clamp(.78rem,1.4vw,.9rem);color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.hstats{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:.4rem}
+.hs{background:rgba(255,255,255,.045);border:1px solid var(--border);border-radius:14px;
+  padding:.7rem 1.2rem;text-align:center;min-width:95px}
+.hs-v{font-family:'Orbitron',sans-serif;font-size:1.45rem;font-weight:800}
+.hs-l{font-size:.63rem;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;margin-top:.2rem}
+.hero-btns{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:9px 18px;
+  border-radius:10px;border:none;font-size:.78rem;font-weight:700;
+  letter-spacing:.4px;text-decoration:none;cursor:pointer;transition:all var(--ease)}
+.btn-r{background:var(--red);color:#fff;box-shadow:0 0 16px rgba(232,0,45,.28)}
+.btn-r:hover{background:#c5002a;transform:translateY(-2px);box-shadow:0 4px 20px rgba(232,0,45,.45)}
+.btn-g{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text)}
+.btn-g:hover{border-color:rgba(232,0,45,.35);background:rgba(232,0,45,.07);transform:translateY(-2px)}
+
+/* STAT BOXES */
+.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-bottom:1.75rem}
+.sb{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:.95rem 1.1rem;position:relative;overflow:hidden}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--ac,var(--red));border-radius:2px 2px 0 0}
+.sb-v{font-family:'Orbitron',sans-serif;font-size:1.65rem;font-weight:800;line-height:1}
+.sb-l{font-size:.62rem;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-top:.3rem}
+
+/* ═══ TABLA PRINCIPAL ════════════════════════════════════════════ */
+.tbl-wrap{background:var(--card);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem}
+.tbl-head-bar{padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:rgba(232,0,45,.06)}
+.tbl-head-bar h3{font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase}
+.tbl-head-bar span{font-size:.7rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+thead th{background:rgba(0,0,0,.3);font-family:'Orbitron',sans-serif;font-size:.62rem;
+  font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:10px 14px;
+  text-align:left;border-bottom:1px solid rgba(232,0,45,.15);color:rgba(255,255,255,.7)}
+thead th.c{text-align:center}
+tbody td{padding:10px 14px;font-size:.83rem;font-weight:500;
+  border-bottom:1px solid rgba(255,255,255,.033);transition:background var(--ease)}
+tbody td.c{text-align:center}
+tbody td.r{text-align:right}
+tbody tr:hover td{background:rgba(232,0,45,.06)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.rk1 td{background:rgba(255,215,0,.06)}
+tbody tr.rk2 td{background:rgba(192,192,192,.04)}
+tbody tr.rk3 td{background:rgba(205,127,50,.04)}
+
+/* Pos badge */
+.pos{display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;font-weight:800;font-size:.78rem}
+.pos.g{background:rgba(255,215,0,.2);color:#FFD700}
+.pos.s{background:rgba(192,192,192,.2);color:#C0C0C0}
+.pos.b{background:rgba(205,127,50,.2);color:#CD7F32}
+.pos.n{color:var(--muted);font-weight:600}
+
+/* Driver number */
+.dnum{display:inline-flex;align-items:center;justify-content:center;
+  min-width:32px;height:22px;border-radius:5px;font-family:'Orbitron',sans-serif;
+  font-size:.7rem;font-weight:900;padding:0 5px}
+
+/* Team bar */
+.tbar{display:inline-block;width:3px;height:18px;border-radius:2px;
+  vertical-align:middle;margin-right:7px;flex-shrink:0}
+
+/* Points */
+.pts{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.88rem}
+
+/* Gap badge */
+.gap{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.68rem;font-weight:700;
+  background:rgba(232,0,45,.12);color:rgba(232,0,45,.8);font-family:'Orbitron',sans-serif}
+
+/* DNF/DSQ tags */
+.tag-dnf{padding:1px 5px;border-radius:3px;font-size:.62rem;font-weight:800;
+  background:rgba(255,80,80,.15);color:#ff7070}
+.tag-dsq{padding:1px 5px;border-radius:3px;font-size:.62rem;font-weight:800;
+  background:rgba(255,200,0,.12);color:#ffd700}
+
+/* ═══ PILOT CARDS GRID ════════════════════════════════════════════ */
+.pilot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.7rem;margin-top:.5rem}
+.pilot-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  display:flex;align-items:center;gap:.85rem;padding:.7rem 1rem;
+  transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);overflow:hidden;position:relative}
+.pilot-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.pilot-card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.pc-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.88rem;
+  min-width:36px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pc-info{flex:1;min-width:0}
+.pc-name{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-team{font-size:.68rem;font-weight:600;margin-top:.1rem}
+.pc-meta{font-size:.62rem;color:var(--muted);margin-top:.08rem}
+.pc-pts{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.05rem;text-align:right;flex-shrink:0}
+.pc-pts-lbl{font-size:.55rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;text-align:right;margin-top:.1rem}
+
+/* ═══ CALENDAR / RESULTS CARDS ═══════════════════════════════════ */
+.gp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.85rem}
+.gp-card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;transition:transform var(--ease),box-shadow var(--ease)}
+.gp-card:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.gp-card-head{padding:.75rem 1rem .65rem;display:flex;gap:.75rem;align-items:flex-start;
+  border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden}
+.gp-dblock{display:flex;flex-direction:column;align-items:center;min-width:50px;text-align:center}
+.gp-days{font-family:'Orbitron',sans-serif;font-size:1.15rem;font-weight:900;color:var(--red);line-height:1}
+.gp-month{font-size:.6rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--muted);margin-top:.15rem;background:rgba(232,0,45,.12);padding:2px 5px;border-radius:4px}
+.gp-info{flex:1}
+.gp-rnd{font-size:.65rem;font-weight:700;color:var(--muted);letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:.18rem;display:flex;align-items:center;gap:.4rem}
+.gp-name{font-size:.9rem;font-weight:700;line-height:1.25}
+.gp-circ{font-size:.7rem;color:var(--muted);margin-top:.18rem}
+.gp-flag{font-size:1.65rem;line-height:1;margin-top:.15rem}
+.sprint-pill{padding:2px 6px;border-radius:4px;font-size:.58rem;font-weight:800;
+  letter-spacing:.3px;text-transform:uppercase;background:rgba(232,0,45,.2);
+  color:#ff7070;border:1px solid rgba(232,0,45,.3)}
+.gp-sessions{padding:.3rem 0}
+.sess{display:flex;align-items:center;gap:.5rem;padding:.38rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,.025);transition:background var(--ease)}
+.sess:last-child{border-bottom:none}
+.sess.click{cursor:pointer}
+.sess.click:hover{background:rgba(232,0,45,.08)}
+.sess.race-s{background:rgba(232,0,45,.04)}
+.sess-lbl{flex:1;font-size:.7rem;font-weight:700}
+.sess.race-s .sess-lbl{color:var(--red)}
+.sess-day{font-size:.62rem;color:var(--muted);font-weight:600;min-width:28px;text-align:center}
+.sess-time{font-size:.72rem;font-weight:700;font-family:monospace;
+  color:rgba(255,255,255,.65);min-width:36px;text-align:right}
+.sbadge{display:inline-flex;align-items:center;gap:.18rem;padding:2px 6px;
+  border-radius:5px;font-size:.58rem;font-weight:800;letter-spacing:.2px;
+  text-transform:uppercase;white-space:nowrap}
+.sb-fin{background:rgba(60,200,80,.1);color:#4dcc5f;border:1px solid rgba(60,200,80,.2)}
+.sb-prox{background:rgba(255,165,0,.1);color:#ffb347;border:1px solid rgba(255,165,0,.2)}
+.sess-arr{font-size:.78rem;color:var(--red);opacity:.7}
+
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(0,0,0,.78);backdrop-filter:blur(12px);
+  align-items:flex-end;justify-content:center}
+#modal.open{display:flex}
+.mbox{background:#0c0c0e;border:1px solid var(--border);border-radius:22px 22px 0 0;
+  width:100%;max-width:700px;max-height:88vh;display:flex;flex-direction:column;
+  animation:su .28s cubic-bezier(.4,0,.2,1)}
+@keyframes su{from{transform:translateY(36px);opacity:0}to{transform:none;opacity:1}}
+.mhead{padding:1rem 1.4rem .85rem;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border)}
+.mtitle{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:800}
+.msub{font-size:.7rem;color:var(--muted);margin-top:.12rem}
+#mcls{background:rgba(255,255,255,.08);border:none;color:var(--text);
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;transition:all var(--ease)}
+#mcls:hover{background:rgba(232,0,45,.3)}
+.mbody{overflow-y:auto;flex:1;padding:.4rem 0}
+.mbody::-webkit-scrollbar{width:4px}
+.mbody::-webkit-scrollbar-thumb{background:rgba(232,0,45,.4);border-radius:2px}
+
+/* NEWS */
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.95rem}
+.nc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;display:flex;flex-direction:column;
+  transition:transform var(--ease),box-shadow var(--ease)}
+.nc:hover{transform:translateY(-4px);box-shadow:0 16px 44px rgba(0,0,0,.55)}
+.nc-hero{height:140px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:.4rem;position:relative;overflow:hidden}
+.nc-em{font-size:3rem;z-index:1;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.nc-cat{position:absolute;top:.55rem;left:.7rem;padding:2px 7px;border-radius:4px;
+  font-size:.58rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;
+  background:rgba(0,0,0,.45);color:rgba(255,255,255,.65);backdrop-filter:blur(4px)}
+.nc-body{padding:.9rem 1rem;flex:1;display:flex;flex-direction:column;gap:.4rem}
+.nc-title{font-size:.88rem;font-weight:700;line-height:1.4}
+.nc-desc{font-size:.74rem;color:var(--muted);line-height:1.52;flex:1}
+.nc-foot{padding:.55rem 1rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center}
+.nc-date{font-size:.66rem;color:var(--muted)}
+.nc-link{font-size:.68rem;font-weight:700;color:var(--red);text-decoration:none}
+.nc-link:hover{text-decoration:underline}
+
+/* POWERBI */
+.pbi-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.pbi-top{padding:.75rem 1.15rem;font-family:'Orbitron',sans-serif;font-size:.7rem;
+  font-weight:700;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem}
+.pbi-wrap iframe{width:100%;height:560px;border:none;display:block;background:#000}
+
+/* CLASIFICACION — dos columnas */
+.clas-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:900px){.clas-grid{grid-template-columns:1fr}}
+
+/* LOGIN */
+#lov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);
+  backdrop-filter:blur(12px);align-items:center;justify-content:center}
+#lov.open{display:flex}
+.lbox{background:#0c0c0e;border:1px solid var(--border);border-radius:22px;
+  padding:2.1rem;text-align:center;max-width:350px;width:90%}
+.lbox h2{font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.4rem}
+.lbox p{color:var(--muted);font-size:.8rem;margin-bottom:1.3rem;line-height:1.5}
+.btn-gg{display:inline-flex;align-items:center;gap:.65rem;padding:11px 20px;
+  border-radius:10px;background:#fff;color:#222;border:none;font-size:.85rem;
+  font-weight:700;cursor:pointer;transition:all var(--ease);width:100%;justify-content:center}
+.btn-gg:hover{background:#f0f0f0;transform:translateY(-1px)}
+#lcls{display:block;margin-top:.85rem;background:none;border:none;color:var(--muted);
+  font-size:.72rem;cursor:pointer;text-decoration:underline}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.75rem;right:1.75rem;z-index:300;background:#0c0c0e;
+  border:1px solid var(--border);border-left:4px solid var(--red);border-radius:10px;
+  padding:.65rem 1.15rem;font-size:.78rem;font-weight:600;
+  transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* LOADING */
+.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:200px;gap:.85rem}
+.sp{width:32px;height:32px;border:3px solid rgba(255,255,255,.08);
+  border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld p{font-size:.76rem;color:var(--muted)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:rgba(232,0,45,.38);border-radius:3px}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .nav-links{display:none}
+  .wrap{padding:1.5rem 1rem 3rem}
+  .gp-grid{grid-template-columns:1fr}
+}
+@media(min-width:1400px){.gp-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:520px){.hstats{gap:.55rem}}
+</style>
+</head>
+<body>
+
+<div id="vbg"><video autoplay muted loop playsinline>
+  <source src="Assets/Intro Oficial Formula 1.mp4" type="video/mp4"/>
+</video></div>
+
+<nav>
+  <img src="FDB.png" alt="FórmulaDB" class="nav-logo" onclick="nav('home')"/>
+  <ul class="nav-links">
+    <li><a href="#" id="nl-home"       onclick="nav('home');return false"          class="active">Inicio</a></li>
+    <li><a href="#" id="nl-pilotos"    onclick="nav('pilotos');return false"               >Pilotos</a></li>
+    <li><a href="#" id="nl-escuderias" onclick="nav('escuderias');return false"            >Escuderías</a></li>
+    <li><a href="#" id="nl-clas"       onclick="nav('clas');return false"                  >Clasificación</a></li>
+    <li><a href="#" id="nl-calendario" onclick="nav('calendario');return false"            >Calendario y Resultados</a></li>
+    <li><a href="#" id="nl-noticias"   onclick="nav('noticias');return false"              >Noticias</a></li>
+    <li><a href="#" id="nl-stats"      onclick="nav('stats');return false"                 >Power BI</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://open.spotify.com/playlist/00L6YaFg8TlZC30ktupQGQ?si=fc99d39869954cc1" target="_blank" rel="noopener"
+      style="display:inline-flex;align-items:center;gap:.4rem;padding:6px 12px;border-radius:20px;
+      background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);
+      color:#1DB954;font-size:.72rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap"
+      onmouseover="this.style.background='rgba(29,185,84,.22)'" onmouseout="this.style.background='rgba(29,185,84,.12)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+       Playlist
+    </a>
+    <img id="user-av" src="" alt=""/>
+    <button id="btn-login" onclick="openL()">
+      <svg width="14" height="14" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Ingresar
+    </button>
+    <button id="btn-out" onclick="doOut()">Salir</button>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ══ INICIO ══════════════════════════════════════════════════ -->
+<div class="section active" id="sec-home">
+  <div class="hero">
+    <div class="hero-badge">🏁 Temporada 2025 · Finalizada</div>
+    <div style="line-height:1;margin-bottom:.2rem">
+      <div style="font-family:'Orbitron',sans-serif;font-size:clamp(3.5rem,9vw,7rem);font-weight:900;
+        letter-spacing:4px;text-transform:uppercase;color:#fff;
+        text-shadow:0 0 40px rgba(232,0,45,.4),0 0 80px rgba(232,0,45,.15)">FÓRMULA</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:clamp(3.5rem,9vw,7rem);font-weight:900;
+        letter-spacing:4px;text-transform:uppercase;
+        background:linear-gradient(135deg,#ff6b9d,#ff8fab,#ffb3c6);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        text-shadow:none">DB</div>
+    </div>
+    <p class="hero-sub">Sistema de Gestión, Información y Análisis de Fórmula 1</p>
+    <div class="hstats">
+
+      <div class="hs"><div class="hs-v" style="color:var(--red)">24</div><div class="hs-l">Grandes Premios</div></div>
+      <div class="hs"><div class="hs-v" style="color:var(--red)">21</div><div class="hs-l">Pilotos</div></div>
+      <div class="hs"><div class="hs-v" style="color:var(--red)">6</div><div class="hs-l">Sprints</div></div>
+
+    </div>
+
+
+<!--      <div class="hero-btns">
+      <button class="btn btn-r" onclick="nav('pilotos')">🏎 Pilotos</button>
+      <button class="btn btn-g" onclick="nav('escuderias')">🏎 Escuderías</button>
+      <button class="btn btn-g" onclick="nav('calendario')">📅 Calendario</button>
+      <button class="btn btn-g" onclick="nav('resultados')">📊 Resultados</button>
+    </div>
+  </div> -->
+
+
+
+ <!-- Power BI embed en home 
+  <div style="padding:0 2rem 3rem;max-width:1380px;margin:0 auto;width:100%">
+    <div class="pbi-wrap">
+      <div class="pbi-top">📊 &nbsp; ESTADÍSTICAS CAMPEONATO F1 2025 · POWER BI INTERACTIVO</div>
+      <iframe title="Promedios_Campeonato"
+        src="https://app.powerbi.com/reportEmbed?reportId=af79e798-4811-4c7d-99a6-5e305e151028&autoAuth=true&ctid=e13f1e52-6e32-4972-82ca-697420ee3c98&actionBarEnabled=true"
+        allowfullscreen="true"></iframe>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+<!-- ══ PILOTOS ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-pilotos">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Pilotos</h1>
+      <span class="ln"></span>
+      <p>Campeón: <strong style="color:var(--t1)">Lando Norris (McLaren)</strong></p>
+    </div>
+    <div class="srow" id="pilot-stats"></div>
+    <div class="tbl-head-bar" style="border-radius:14px 14px 0 0;margin-bottom:0">
+      <h3>🏎 Todos los Pilotos — Temporada 2025</h3>
+      <span>21 pilotos · orden por N° de asiento</span>
+    </div>
+    <div class="pilot-grid" id="pilotos-grid"></div>
+  </div>
+</div>
+
+<!-- ══ ESCUDERÍAS ═══════════════════════════════════════════════ -->
+<div class="section" id="sec-escuderias">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Escuderías</h1>
+      <span class="ln"></span>
+      <p>Campeonato de Constructores · Campeón: <strong style="color:var(--t1)">McLaren Formula 1 Team</strong></p>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-head-bar">
+        <h3>Temporada 2025</h3>
+        <span>10 equipos · ordenados por puntos</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th class="c">POS</th>
+              <th>Escudería</th>
+              <th>País</th>
+              <th>Auto</th>
+              <th>Motor</th>
+              <th>Pilotos</th>
+              <th class="c r">Puntos</th>
+            </tr>
+          </thead>
+          <tbody id="esc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLASIFICACIÓN ════════════════════════════════════════════ -->
+<div class="section" id="sec-clas">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Clasificación </h1>
+      <span class="ln"></span>
+      <p>Campeonato Mundial de Fórmula 1 · 2025</p>
+    </div>
+    <div class="srow" id="clas-stats"></div>
+    <div class="clas-grid" id="clas-content">
+      <div class="ld"><div class="sp"></div><p>Cargando...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CALENDARIO ═══════════════════════════════════════════════ -->
+<div class="section" id="sec-calendario">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Calendario y Resultados</h1>
+      <span class="ln"></span>
+      <p>Horario (UTC-3:00) Ciudad de Buenos Aires</p>
+    </div>
+    <div class="srow" style="margin-bottom:1.5rem">
+      <div class="sb" style="--ac:var(--red)"><div class="sb-v">24</div><div class="sb-l">GP Total</div></div>
+      <div class="sb" style="--ac:var(--t4)"><div class="sb-v">6</div><div class="sb-l">Sprints</div></div>
+      <div class="sb"><div class="sb-v">5</div><div class="sb-l">Continentes</div></div>
+      <div class="sb" style="--ac:var(--t1)"><div class="sb-v">22</div><div class="sb-l">Países</div></div>
+    </div>
+    <div id="calendario-c" class="gp-grid"></div>
+  </div>
+</div>
+
+<!-- ══ RESULTADOS ═══════════════════════════════════════════════ -->
+<div class="section" id="sec-resultados">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Resultados <span style="font-size:.48em;color:var(--muted)">F1 2025</span></h1>
+      <span class="ln"></span>
+      <p>Click en una sesión <strong style="color:var(--red)">✅ Terminada</strong> para ver los resultados completos</p>
+    </div>
+    <div id="resultados-c" class="gp-grid"></div>
+  </div>
+</div>
+
+<!-- ══ NOTICIAS ═════════════════════════════════════════════════ -->
+<div class="section" id="sec-noticias">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Noticias <span style="font-size:.48em;color:var(--muted)">F1 2025</span></h1>
+      <span class="ln"></span><p>Las historias más importantes de la temporada</p>
+    </div>
+    <div id="noticias-c" class="ld"><div class="sp"></div><p>Cargando...</p></div>
+  </div>
+</div>
+
+<!-- ══ POWER BI ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-stats">
+  <div class="wrap">
+    <div class="ph">
+      <h1>Power BI <span style="font-size:.48em;color:var(--muted)">Estadísticas</span></h1>
+      <span class="ln"></span>
+      <p>Dashboard interactivo · Promedios, puntos por ronda y análisis completo de la temporada 2025</p>
+    </div>
+    <div class="pbi-wrap">
+      <div class="pbi-top">📊 &nbsp; CAMPEONATO F1 2025 — Promedios &amp; Estadísticas Interactivas</div>
+      <iframe title="Promedios_Campeonato"
+        src="https://app.powerbi.com/reportEmbed?reportId=af79e798-4811-4c7d-99a6-5e305e151028&autoAuth=true&ctid=e13f1e52-6e32-4972-82ca-697420ee3c98&actionBarEnabled=true"
+        allowfullscreen="true"></iframe>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL RESULTADOS -->
+<div id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="mbox">
+    <div class="mhead">
+      <div>
+        <div class="mtitle" id="mtitle">Resultados</div>
+        <div class="msub" id="msub"></div>
+      </div>
+      <button id="mcls" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody" id="mbody">
+      <div class="ld"><div class="sp"></div><p>Cargando...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="lov" onclick="if(event.target===this)closeL()">
+  <div class="lbox">
+    <h2>FÓRMULADB</h2>
+    <p>Iniciá sesión con Google para guardar preferencias y acceder a todas las funciones.</p>
+    <button class="btn-gg" onclick="doLogin()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continuar con Google
+    </button>
+    <button id="lcls" onclick="closeL()">Continuar sin iniciar sesión</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FIREBASE + LÓGICA
+═══════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where }
+                          from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+                          from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB=initializeApp({apiKey:"AIzaSyD-98WBOmHTtyKAIpUOlGmToy_sTCjKJn8",authDomain:"formula-db-b1827.firebaseapp.com",projectId:"formula-db-b1827",storageBucket:"formula-db-b1827.firebasestorage.app",messagingSenderId:"686000112473",appId:"1:686000112473:web:8d8278cbd6d6d546b7c248"});
+const db=getFirestore(FB);
+const auth=getAuth(FB);
+const gpv=new GoogleAuthProvider();
+
+// ─── AUTH ──────────────────────────────────────────────────────
+window.doLogin=async()=>{try{await signInWithPopup(auth,gpv);closeL();}catch(e){if(e.code!=='auth/popup-closed-by-user')toast('⚠️ Error al iniciar sesión');}};
+window.doOut=async()=>{await signOut(auth);toast('👋 Sesión cerrada');};
+window.openL=()=>document.getElementById('lov').classList.add('open');
+window.closeL=()=>document.getElementById('lov').classList.remove('open');
+onAuthStateChanged(auth,u=>{
+  const av=document.getElementById('user-av'),lb=document.getElementById('btn-login'),lo=document.getElementById('btn-out');
+  if(u){av.src=u.photoURL||'';av.style.display=u.photoURL?'block':'none';lb.style.display='none';lo.style.display='inline-flex';toast(`✅ Bienvenido, ${u.displayName?.split(' ')[0]||'piloto'}!`);}
+  else{av.style.display='none';lb.style.display='inline-flex';lo.style.display='none';}
+});
+
+// ─── TOAST ─────────────────────────────────────────────────────
+window.toast=(msg,ms=3200)=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);};
+
+// ─── FIRESTORE ─────────────────────────────────────────────────
+async function getAll(col){const s=await getDocs(collection(db,col));return s.docs.map(d=>({...d.data(),_id:d.id}));}
+async function getWhere(col,f,v){const s=await getDocs(query(collection(db,col),where(f,'==',String(v))));return s.docs.map(d=>({...d.data(),_id:d.id}));}
+
+// ─── EQUIPO DATA (IDs del SQL — 4InfoEscuderias.sql) ──────────
+// 1=McLaren 2=RedBull 3=Mercedes 4=Ferrari 5=RacingBulls
+// 6=Williams 7=Haas 8=AstonMartin 9=KickSauber 10=Alpine
+const TN={1:'McLaren',2:'Red Bull',3:'Mercedes',4:'Ferrari',5:'Racing Bulls',6:'Williams',7:'Haas',8:'Aston Martin',9:'Kick Sauber',10:'Alpine'};
+const TCOL={1:'#FF8000',2:'#1E3D8F',3:'#00D2BE',4:'#E8002D',5:'#6692FF',6:'#37BEDD',7:'#B6BABD',8:'#358C75',9:'#52E252',10:'#FF87BC'};
+function tn(id){return TN[+id]??'-'} function tcol(id){return TCOL[+id]??'#888'}
+
+// ─── PILOTO → ESCUDERÍA (6PilotoEscuderias.sql real) ─────────
+const PE={1:2,2:1,3:9,4:5,5:10,6:10,7:3,8:8,9:4,10:8,11:2,12:6,13:9,14:5,15:7,16:10,17:4,18:6,19:3,20:1,21:7};
+
+// ─── GP INFO (circuitoId → nombre) ─────────────────────────────
+const GP={1:{n:'Australia',f:'🇦🇺',full:'Gran Premio de Australia',circ:'Albert Park'},2:{n:'China',f:'🇨🇳',full:'Gran Premio de China',circ:'Shanghái'},3:{n:'Japón',f:'🇯🇵',full:'Gran Premio de Japón',circ:'Suzuka'},4:{n:'Bahréin',f:'🇧🇭',full:'Gran Premio de Bahréin',circ:'Sakhir'},5:{n:'Arabia Saudita',f:'🇸🇦',full:'Gran Premio de Arabia Saudita',circ:'Jeddah'},6:{n:'Miami',f:'🇺🇸',full:'Gran Premio de Miami',circ:'Hard Rock Stadium'},7:{n:'Emilia Romagna',f:'🇮🇹',full:'Gran Premio de Emilia Romagna',circ:'Imola'},8:{n:'Mónaco',f:'🇲🇨',full:'Gran Premio de Mónaco',circ:'Montecarlo'},9:{n:'España',f:'🇪🇸',full:'Gran Premio de España',circ:'Barcelona-Catalunya'},10:{n:'Canadá',f:'🇨🇦',full:'Gran Premio de Canadá',circ:'Gilles Villeneuve'},11:{n:'Austria',f:'🇦🇹',full:'Gran Premio de Austria',circ:'Red Bull Ring'},12:{n:'Gran Bretaña',f:'🇬🇧',full:'Gran Premio de Gran Bretaña',circ:'Silverstone'},13:{n:'Bélgica',f:'🇧🇪',full:'Gran Premio de Bélgica',circ:'Spa-Francorchamps'},14:{n:'Hungría',f:'🇭🇺',full:'Gran Premio de Hungría',circ:'Hungaroring'},15:{n:'Países Bajos',f:'🇳🇱',full:'Gran Premio de Países Bajos',circ:'Zandvoort'},16:{n:'Italia',f:'🇮🇹',full:'Gran Premio de Italia',circ:'Monza'},17:{n:'Azerbaiyán',f:'🇦🇿',full:'Gran Premio de Azerbaiyán',circ:'Bakú City Circuit'},18:{n:'Singapur',f:'🇸🇬',full:'Gran Premio de Singapur',circ:'Marina Bay'},19:{n:'Estados Unidos',f:'🇺🇸',full:'Gran Premio de Estados Unidos',circ:'COTA, Austin'},20:{n:'México',f:'🇲🇽',full:'Gran Premio de México',circ:'Autódromo Hnos. Rodríguez'},21:{n:'São Paulo',f:'🇧🇷',full:'Gran Premio de São Paulo',circ:'Interlagos'},22:{n:'Las Vegas',f:'🇺🇸',full:'Gran Premio de Las Vegas',circ:'Las Vegas Strip'},23:{n:'Qatar',f:'🇶🇦',full:'Gran Premio de Qatar',circ:'Losail'},24:{n:'Abu Dhabi',f:'🇦🇪',full:'Gran Premio de Abu Dhabi',circ:'Yas Marina'}};
+
+// ─── CALENDARIO (3Calendario.sql — 120 sesiones embebidas) ─────
+// t: 0=Libre 1=Clasificacion 2=Sprint 3=Carrera
+const CAL=[
+{id:1,r:1,c:1,v:0,f:'2025-03-13T22:30Z',t:0},{id:2,r:1,c:1,v:0,f:'2025-03-14T02:00Z',t:0},
+{id:3,r:1,c:1,v:0,f:'2025-03-14T22:30Z',t:0},{id:4,r:1,c:1,v:0,f:'2025-03-15T02:00Z',t:1},
+{id:5,r:1,c:1,v:58,f:'2025-03-16T01:00Z',t:3},
+{id:6,r:2,c:2,v:0,f:'2025-03-21T00:30Z',t:0},{id:7,r:2,c:2,v:0,f:'2025-03-21T04:30Z',t:1},
+{id:8,r:2,c:2,v:19,f:'2025-03-22T00:00Z',t:2},{id:9,r:2,c:2,v:0,f:'2025-03-22T04:00Z',t:1},
+{id:10,r:2,c:2,v:56,f:'2025-03-23T04:00Z',t:3},
+{id:11,r:3,c:3,v:0,f:'2025-04-03T23:30Z',t:0},{id:12,r:3,c:3,v:0,f:'2025-04-04T03:00Z',t:0},
+{id:13,r:3,c:3,v:0,f:'2025-04-04T23:30Z',t:0},{id:14,r:3,c:3,v:0,f:'2025-04-05T03:00Z',t:1},
+{id:15,r:3,c:3,v:53,f:'2025-04-06T02:00Z',t:3},
+{id:16,r:4,c:4,v:0,f:'2025-04-11T08:30Z',t:0},{id:17,r:4,c:4,v:0,f:'2025-04-11T12:00Z',t:0},
+{id:18,r:4,c:4,v:0,f:'2025-04-12T09:30Z',t:0},{id:19,r:4,c:4,v:0,f:'2025-04-12T13:00Z',t:1},
+{id:20,r:4,c:4,v:57,f:'2025-04-13T12:00Z',t:3},
+{id:21,r:5,c:5,v:0,f:'2025-04-18T10:30Z',t:0},{id:22,r:5,c:5,v:0,f:'2025-04-18T14:00Z',t:0},
+{id:23,r:5,c:5,v:0,f:'2025-04-19T10:30Z',t:0},{id:24,r:5,c:5,v:0,f:'2025-04-19T14:00Z',t:1},
+{id:25,r:5,c:5,v:50,f:'2025-04-20T14:00Z',t:3},
+{id:26,r:6,c:6,v:0,f:'2025-05-02T13:30Z',t:0},{id:27,r:6,c:6,v:0,f:'2025-05-02T17:30Z',t:1},
+{id:28,r:6,c:6,v:21,f:'2025-05-03T13:00Z',t:2},{id:29,r:6,c:6,v:0,f:'2025-05-03T17:00Z',t:1},
+{id:30,r:6,c:6,v:57,f:'2025-05-04T17:00Z',t:3},
+{id:31,r:7,c:7,v:0,f:'2025-05-16T08:30Z',t:0},{id:32,r:7,c:7,v:0,f:'2025-05-16T12:00Z',t:0},
+{id:33,r:7,c:7,v:0,f:'2025-05-17T07:30Z',t:0},{id:34,r:7,c:7,v:0,f:'2025-05-17T11:00Z',t:1},
+{id:35,r:7,c:7,v:53,f:'2025-05-19T10:00Z',t:3},
+{id:36,r:8,c:8,v:0,f:'2025-05-23T08:30Z',t:0},{id:37,r:8,c:8,v:0,f:'2025-05-23T12:00Z',t:0},
+{id:38,r:8,c:8,v:0,f:'2025-05-24T07:30Z',t:0},{id:39,r:8,c:8,v:0,f:'2025-05-24T11:00Z',t:1},
+{id:40,r:8,c:8,v:78,f:'2025-05-25T10:00Z',t:3},
+{id:41,r:9,c:9,v:0,f:'2025-05-30T08:30Z',t:0},{id:42,r:9,c:9,v:0,f:'2025-05-30T12:00Z',t:0},
+{id:43,r:9,c:9,v:0,f:'2025-05-31T07:30Z',t:0},{id:44,r:9,c:9,v:0,f:'2025-05-31T11:00Z',t:1},
+{id:45,r:9,c:9,v:66,f:'2025-06-01T10:00Z',t:3},
+{id:46,r:10,c:10,v:0,f:'2025-06-13T14:30Z',t:0},{id:47,r:10,c:10,v:0,f:'2025-06-13T18:00Z',t:0},
+{id:48,r:10,c:10,v:0,f:'2025-06-14T13:30Z',t:0},{id:49,r:10,c:10,v:0,f:'2025-06-14T17:00Z',t:1},
+{id:50,r:10,c:10,v:70,f:'2025-06-15T15:00Z',t:3},
+{id:51,r:11,c:11,v:0,f:'2025-06-27T08:30Z',t:0},{id:52,r:11,c:11,v:0,f:'2025-06-27T12:00Z',t:0},
+{id:53,r:11,c:11,v:0,f:'2025-06-28T07:30Z',t:0},{id:54,r:11,c:11,v:0,f:'2025-06-28T11:00Z',t:1},
+{id:55,r:11,c:11,v:71,f:'2025-06-29T10:00Z',t:3},
+{id:56,r:12,c:12,v:0,f:'2025-07-04T08:30Z',t:0},{id:57,r:12,c:12,v:0,f:'2025-07-04T12:00Z',t:0},
+{id:58,r:12,c:12,v:0,f:'2025-07-05T07:30Z',t:0},{id:59,r:12,c:12,v:0,f:'2025-07-05T11:00Z',t:1},
+{id:60,r:12,c:12,v:52,f:'2025-07-06T11:00Z',t:3},
+{id:61,r:13,c:13,v:0,f:'2025-07-25T07:30Z',t:0},{id:62,r:13,c:13,v:0,f:'2025-07-25T11:30Z',t:1},
+{id:63,r:13,c:13,v:11,f:'2025-07-26T07:00Z',t:2},{id:64,r:13,c:13,v:0,f:'2025-07-26T11:00Z',t:1},
+{id:65,r:13,c:13,v:44,f:'2025-07-27T10:00Z',t:3},
+{id:66,r:14,c:14,v:0,f:'2025-08-01T08:30Z',t:0},{id:67,r:14,c:14,v:0,f:'2025-08-01T12:00Z',t:0},
+{id:68,r:14,c:14,v:0,f:'2025-08-02T07:30Z',t:0},{id:69,r:14,c:14,v:0,f:'2025-08-02T11:00Z',t:1},
+{id:70,r:14,c:14,v:70,f:'2025-08-03T10:00Z',t:3},
+{id:71,r:15,c:15,v:0,f:'2025-08-29T07:30Z',t:0},{id:72,r:15,c:15,v:0,f:'2025-08-29T11:00Z',t:0},
+{id:73,r:15,c:15,v:0,f:'2025-08-30T06:30Z',t:0},{id:74,r:15,c:15,v:0,f:'2025-08-30T10:00Z',t:1},
+{id:75,r:15,c:15,v:72,f:'2025-08-31T10:00Z',t:3},
+{id:76,r:16,c:16,v:0,f:'2025-09-05T08:30Z',t:0},{id:77,r:16,c:16,v:0,f:'2025-09-05T12:00Z',t:0},
+{id:78,r:16,c:16,v:0,f:'2025-09-06T07:30Z',t:0},{id:79,r:16,c:16,v:0,f:'2025-09-06T11:00Z',t:1},
+{id:80,r:16,c:16,v:53,f:'2025-09-07T10:00Z',t:3},
+{id:81,r:17,c:17,v:0,f:'2025-09-19T05:30Z',t:0},{id:82,r:17,c:17,v:0,f:'2025-09-19T09:00Z',t:0},
+{id:83,r:17,c:17,v:0,f:'2025-09-20T05:30Z',t:0},{id:84,r:17,c:17,v:0,f:'2025-09-20T09:00Z',t:1},
+{id:85,r:17,c:17,v:51,f:'2025-09-21T08:00Z',t:3},
+{id:86,r:18,c:18,v:0,f:'2025-10-03T06:30Z',t:0},{id:87,r:18,c:18,v:0,f:'2025-10-03T10:00Z',t:0},
+{id:88,r:18,c:18,v:0,f:'2025-10-04T06:30Z',t:0},{id:89,r:18,c:18,v:0,f:'2025-10-04T10:00Z',t:1},
+{id:90,r:18,c:18,v:61,f:'2025-10-05T10:00Z',t:3},
+{id:91,r:19,c:19,v:0,f:'2025-10-17T14:30Z',t:0},{id:92,r:19,c:19,v:0,f:'2025-10-17T18:30Z',t:1},
+{id:93,r:19,c:19,v:19,f:'2025-10-18T14:00Z',t:2},{id:94,r:19,c:19,v:0,f:'2025-10-18T18:00Z',t:1},
+{id:95,r:19,c:19,v:56,f:'2025-10-19T16:00Z',t:3},
+{id:96,r:20,c:20,v:0,f:'2025-10-24T15:30Z',t:0},{id:97,r:20,c:20,v:0,f:'2025-10-24T19:00Z',t:0},
+{id:98,r:20,c:20,v:0,f:'2025-10-25T14:30Z',t:0},{id:99,r:20,c:20,v:0,f:'2025-10-25T18:00Z',t:1},
+{id:100,r:20,c:20,v:71,f:'2025-10-26T16:00Z',t:3},
+{id:101,r:21,c:21,v:0,f:'2025-11-07T11:30Z',t:0},{id:102,r:21,c:21,v:0,f:'2025-11-07T15:30Z',t:1},
+{id:103,r:21,c:21,v:24,f:'2025-11-08T11:00Z',t:2},{id:104,r:21,c:21,v:0,f:'2025-11-08T15:00Z',t:1},
+{id:105,r:21,c:21,v:71,f:'2025-11-09T14:00Z',t:3},
+{id:106,r:22,c:22,v:0,f:'2025-11-20T21:30Z',t:0},{id:107,r:22,c:22,v:0,f:'2025-11-21T01:00Z',t:0},
+{id:108,r:22,c:22,v:0,f:'2025-11-21T21:30Z',t:0},{id:109,r:22,c:22,v:0,f:'2025-11-22T01:30Z',t:1},
+{id:110,r:22,c:22,v:50,f:'2025-11-23T01:00Z',t:3},
+{id:111,r:23,c:23,v:0,f:'2025-11-28T10:30Z',t:0},{id:112,r:23,c:23,v:0,f:'2025-11-28T14:30Z',t:1},
+{id:113,r:23,c:23,v:19,f:'2025-11-29T11:00Z',t:2},{id:114,r:23,c:23,v:0,f:'2025-11-29T15:00Z',t:1},
+{id:115,r:23,c:23,v:57,f:'2025-11-30T13:00Z',t:3},
+{id:116,r:24,c:24,v:0,f:'2025-12-05T06:30Z',t:0},{id:117,r:24,c:24,v:0,f:'2025-12-05T10:00Z',t:0},
+{id:118,r:24,c:24,v:0,f:'2025-12-06T07:30Z',t:0},{id:119,r:24,c:24,v:0,f:'2025-12-06T11:00Z',t:1},
+{id:120,r:24,c:24,v:58,f:'2025-12-07T10:00Z',t:3}];
+
+// ─── UTILS ─────────────────────────────────────────────────────
+const DAYS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MON=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+const NOW=new Date();
+function utcH(f){const d=new Date(f);return`${d.getUTCHours().toString().padStart(2,'0')}:${d.getUTCMinutes().toString().padStart(2,'0')}`}
+function utcDay(f){return DAYS[new Date(f).getUTCDay()]}
+function isPast(f){return new Date(f)<NOW}
+function fmtFecha(f){const d=new Date(f);return`${d.getUTCDate()} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()}`}
+
+function sessLbl(s,all){
+  const isSpr=all.some(x=>x.t===2);
+  const prev=all.slice(0,all.indexOf(s)).filter(x=>x.t===s.t);
+  if(s.t===0)return`Práctica ${prev.length+1}`;
+  if(s.t===3)return'Gran Premio';
+  if(s.t===2)return'Sprint';
+  if(s.t===1){if(isSpr)return prev.length===0?'Clas. Sprint':'Clasificación';return'Clasificación';}
+  return'Sesión';
+}
+
+function posBadge(i){
+  if(i===0)return'<span class="pos g">1°</span>';
+  if(i===1)return'<span class="pos s">2°</span>';
+  if(i===2)return'<span class="pos b">3°</span>';
+  return`<span class="pos n">${i+1}°</span>`;
+}
+
+// ─── NAVEGACIÓN ────────────────────────────────────────────────
+const PAGES=['home','pilotos','escuderias','clas','calendario','resultados','noticias','stats'];
+const loaded={};
+const loaders={pilotos:loadPilotos,escuderias:loadEscuderias,clas:loadClasificacion,noticias:loadNoticias};
+
+window.nav=p=>{
+  PAGES.forEach(x=>{
+    document.getElementById(`sec-${x}`).classList.toggle('active',x===p);
+    const nl=document.getElementById(`nl-${x}`);
+    if(nl)nl.classList.toggle('active',x===p);
+  });
+  document.body.classList.toggle('inner',p!=='home');
+  if(!loaded[p]&&loaders[p]){loaded[p]=true;loaders[p]();}
+  if(p==='calendario'&&!loaded.cal){loaded.cal=true;renderCal();}
+  if(p==='resultados'&&!loaded.res){loaded.res=true;renderRes();}
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+// Cache pilotos para modal
+let _pil=null;
+async function getPilotos(){if(!_pil)_pil=await getAll('pilotos');return _pil;}
+
+// ─── MODAL ─────────────────────────────────────────────────────
+window.closeModal=()=>document.getElementById('modal').classList.remove('open');
+
+window.openModal=async(rondaId,lbl,gpNm)=>{
+  const m=document.getElementById('modal');
+  document.getElementById('mtitle').textContent=lbl;
+  document.getElementById('msub').textContent=gpNm;
+  document.getElementById('mbody').innerHTML='<div class="ld"><div class="sp"></div><p>Cargando...</p></div>';
+  m.classList.add('open');
+  try{
+    const [res,pilotos]=await Promise.all([getWhere('resultadosRonda','rondaId',String(rondaId)),getPilotos()]);
+    const pMap=Object.fromEntries(pilotos.map(p=>[p.id,p]));
+    if(!res.length){
+      document.getElementById('mbody').innerHTML='<p style="padding:2rem;text-align:center;color:var(--muted)">Sin datos en la base de datos para esta sesión.</p>';
+      return;
+    }
+    res.sort((a,b)=>+a.posicionFinal-+b.posicionFinal);
+    const rows=res.map(r=>{
+      const p=pMap[r.pilotoId]??{};
+      const eid=PE[+r.pilotoId]??1;
+      const col=tcol(eid);const team=tn(eid);
+      const pos=+r.posicionFinal;
+      const posB=pos===0?'🥇':pos===1?'🥈':pos===2?'🥉':`<span style="color:var(--muted);font-weight:600">${pos+1}</span>`;
+      const tf=r.tiempoFinal??'-';
+      const isDNF=tf==='DNF'||tf==='DNS';const isDSQ=tf==='DSQ';
+      const timeTxt=isDNF?`<span class="tag-dnf">${tf}</span>`:isDSQ?`<span class="tag-dsq">DSQ</span>`:`<span style="font-family:monospace;font-size:.76rem;color:var(--muted)">${tf}</span>`;
+      const ptsBadge=+r.puntos>0?`<span style="font-family:'Orbitron';font-size:.78rem;font-weight:800;color:${col}">${r.puntos}p</span>`:'';
+      return`<div style="display:grid;grid-template-columns:30px 1fr auto auto;align-items:center;gap:.65rem;
+        padding:.55rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.03);
+        transition:background .18s" onmouseover="this.style.background='rgba(232,0,45,.06)'" onmouseout="this.style.background=''">
+        <div style="text-align:center;font-size:.95rem">${posB}</div>
+        <div>
+          <div style="font-weight:700;font-size:.82rem">
+            <span class="tbar" style="background:${col}"></span>
+            <span style="font-family:'Orbitron';font-size:.68rem;color:${col}">#${p.numero??'?'}</span>
+            &nbsp;${p.nombre??''} <strong>${(p.apellido??'').toUpperCase()}</strong>
+          </div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:.1rem;padding-left:10px">${team}</div>
+        </div>
+        <div>${timeTxt}</div>
+        <div style="min-width:28px;text-align:right">${ptsBadge}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('mbody').innerHTML=`<div>${rows}</div>`;
+  }catch(e){
+    document.getElementById('mbody').innerHTML=`<p style="padding:2rem;color:#f87171">Error: ${e.message}</p>`;
+  }
+};
+
+// ─── BUILD GP CARD ─────────────────────────────────────────────
+function buildCard(rnum,sessions,onlyComp){
+  const c=sessions[0].c; const g=GP[c]??{n:'?',f:'?',full:'GP',circ:'?'};
+  const isSpr=sessions.some(s=>s.t===2);
+  const dates=sessions.map(s=>new Date(s.f));
+  const fd=new Date(Math.min(...dates)); const ld=new Date(Math.max(...dates));
+  const dr=fd.getUTCDate()===ld.getUTCDate()?`${fd.getUTCDate()}`:`${fd.getUTCDate()}-${ld.getUTCDate()}`;
+  const mn=MON[ld.getUTCMonth()];
+  const show=onlyComp?sessions.filter(s=>s.t>=1):sessions;
+  const rows=show.map(s=>{
+    const lbl=sessLbl(s,sessions);
+    const past=isPast(s.f);
+    const isRace=s.t===3;
+    const isComp=s.t>=1;
+    const clk=isComp&&past;
+    const badge=past?'<span class="sbadge sb-fin">✅ Terminada</span>':'<span class="sbadge sb-prox">🔜 Próxima</span>';
+    return`<div class="sess${clk?' click':''}${isRace?' race-s':''}"
+      ${clk?`onclick="openModal(${s.id},'${lbl}','R${rnum} · ${g.n} ${g.f}')"`:''}>
+      <div class="sess-lbl">${lbl}</div>
+      <div class="sess-day">${utcDay(s.f)}</div>
+      <div class="sess-time">${utcH(s.f)}</div>
+      ${badge}
+      ${clk?'<span class="sess-arr">›</span>':''}
+    </div>`;
+  }).join('');
+  return`<div class="gp-card">
+    <div class="gp-card-head">
+      <div class="gp-dblock"><div class="gp-days">${dr}</div><div class="gp-month">${mn}</div></div>
+      <div class="gp-info">
+        <div class="gp-rnd">R${rnum}${isSpr?' <span class="sprint-pill">⚡ SPRINT</span>':''}</div>
+        <div class="gp-name">${g.full}</div>
+        <div class="gp-circ">${g.circ}</div>
+      </div>
+      <div class="gp-flag">${g.f}</div>
+    </div>
+    <div class="gp-sessions">${rows}</div>
+  </div>`;
+}
+
+function renderCal(){
+  const byR={};CAL.forEach(s=>{if(!byR[s.r])byR[s.r]=[];byR[s.r].push(s);});
+  document.getElementById('calendario-c').innerHTML=
+    Object.keys(byR).map(Number).sort((a,b)=>a-b).map(r=>buildCard(r,byR[r],false)).join('');
+}
+function renderRes(){
+  const byR={};CAL.forEach(s=>{if(!byR[s.r])byR[s.r]=[];byR[s.r].push(s);});
+  document.getElementById('resultados-c').innerHTML=
+    Object.keys(byR).map(Number).sort((a,b)=>a-b).map(r=>buildCard(r,byR[r],true)).join('');
+}
+
+// ─── PILOTOS (tabla) ───────────────────────────────────────────
+async function loadPilotos(){
+  try{
+    const [pilotos,res]=await Promise.all([getAll('pilotos'),getAll('resultadosRonda')]);
+    const ptsMap={};
+    res.forEach(r=>{ptsMap[r.pilotoId]=(ptsMap[r.pilotoId]??0)+(+r.puntos||0);});
+    pilotos.sort((a,b)=>+a.numero-+b.numero); // ordenar por número asiento
+    const sorted=[...pilotos].sort((a,b)=>(ptsMap[b.id]??0)-(ptsMap[a.id]??0));
+    const p1=ptsMap[sorted[0]?.id]??0, p2=ptsMap[sorted[1]?.id]??0;
+    const eid1=PE[+sorted[0]?.id]??1;
+    document.getElementById('pilot-stats').innerHTML=`
+      <div class="sb" style="--ac:${tcol(eid1)}"><div class="sb-v" style="color:${tcol(eid1)}">${p1}</div><div class="sb-l">Puntos Campeón</div></div>
+      <div class="sb" style="--ac:var(--red)"><div class="sb-v" style="color:var(--red)">+${p1-p2}</div><div class="sb-l">Ventaja vs 2°</div></div>
+      <div class="sb"><div class="sb-v">${pilotos.length}</div><div class="sb-l">Pilotos</div></div>
+      <div class="sb" style="--ac:var(--t3)"><div class="sb-v">10</div><div class="sb-l">Escuderías</div></div>`;
+    // Tabla con orden por número asiento
+    document.getElementById('pilotos-tbody').innerHTML=pilotos.map(p=>{
+      const eid=PE[+p.id]??1; const col=tcol(eid); const team=tn(eid);
+      const pts=ptsMap[p.id]??0;
+      return`<tr>
+        <td class="c"><span class="dnum" style="background:${col}22;color:${col}">${p.numero}</span></td>
+        <td class="c"><span class="tbar" style="background:${col}"></span></td>
+        <td><strong>${p.nombre}</strong> ${p.apellido?.toUpperCase()}</td>
+        <td><span style="color:${col};font-weight:700">${team}</span></td>
+        <td>${p.pais}</td>
+        <td class="c">${p.edad}</td>
+        <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){document.getElementById('pilotos-tbody').innerHTML=`<tr><td colspan="7" style="color:#f87171;padding:1rem">Error: ${e.message}</td></tr>`;}
+}
+
+// ─── ESCUDERÍAS (tabla) ────────────────────────────────────────
+async function loadEscuderias(){
+  try{
+    const [esc,pilotos,autos,res]=await Promise.all([getAll('escuderias'),getAll('pilotos'),getAll('autos'),getAll('resultadosRonda')]);
+    const pPts={};res.forEach(r=>{pPts[r.pilotoId]=(pPts[r.pilotoId]??0)+(+r.puntos||0);});
+    const tPts={};pilotos.forEach(p=>{const e=PE[+p.id]??1;tPts[e]=(tPts[e]??0)+(pPts[p.id]??0);});
+    esc.sort((a,b)=>(tPts[+b.id]??0)-(tPts[+a.id]??0));
+    const drsByEsc=eid=>pilotos.filter(p=>PE[+p.id]===eid).map(p=>`${p.nombre} ${p.apellido}`).join(' & ');
+    const autoByEsc=eid=>autos.find(a=>+a.escuderiaId===eid);
+    document.getElementById('esc-tbody').innerHTML=esc.map((e,i)=>{
+      const col=tcol(e.id); const pts=tPts[+e.id]??0; const auto=autoByEsc(+e.id);
+      const rowCls=i===0?'rk1':i===1?'rk2':i===2?'rk3':'';
+      return`<tr class="${rowCls}">
+        <td class="c">${posBadge(i)}</td>
+        <td>
+          <span class="tbar" style="background:${col}"></span>
+          <strong style="color:${col}">${e.nombre}</strong>
+        </td>
+        <td>${e.pais}</td>
+        <td>${auto?.nombre??'-'}</td>
+        <td style="font-size:.76rem;color:var(--muted)">${auto?.motor??'-'}</td>
+        <td style="font-size:.76rem">${drsByEsc(+e.id)}</td>
+        <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){document.getElementById('esc-tbody').innerHTML=`<tr><td colspan="7" style="color:#f87171;padding:1rem">Error: ${e.message}</td></tr>`;}
+}
+
+// ─── CLASIFICACIÓN (pilotos + constructores, tablas) ────────────
+async function loadClasificacion(){
+  try{
+    const [pilotos,esc,autos,res]=await Promise.all([getAll('pilotos'),getAll('escuderias'),getAll('autos'),getAll('resultadosRonda')]);
+    const pPts={};const pCar={};const pSpr={};
+    res.forEach(r=>{
+      pPts[r.pilotoId]=(pPts[r.pilotoId]??0)+(+r.puntos||0);
+    });
+    const tPts={};pilotos.forEach(p=>{const e=PE[+p.id]??1;tPts[e]=(tPts[e]??0)+(pPts[p.id]??0);});
+    const pSorted=[...pilotos].sort((a,b)=>(pPts[b.id]??0)-(pPts[a.id]??0));
+    const eSorted=[...esc].sort((a,b)=>(tPts[+b.id]??0)-(tPts[+a.id]??0));
+    const p1=pPts[pSorted[0]?.id]??0;
+    const e1=tPts[+eSorted[0]?.id]??0;
+    document.getElementById('clas-stats').innerHTML=`
+      <div class="sb" style="--ac:${tcol(PE[+pSorted[0]?.id]??1)}"><div class="sb-v" style="color:${tcol(PE[+pSorted[0]?.id]??1)}">${p1}</div><div class="sb-l">Puntos Campeón</div></div>
+      <div class="sb" style="--ac:var(--red)"><div class="sb-v" style="color:var(--red)">+${p1-(pPts[pSorted[1]?.id]??0)}</div><div class="sb-l">Brecha 1° vs 2°</div></div>
+      <div class="sb" style="--ac:var(--t1)"><div class="sb-v" style="color:var(--t1)">${e1}</div><div class="sb-l">Pts Constructores</div></div>
+      <div class="sb"><div class="sb-v">2025</div><div class="sb-l">Temporada</div></div>`;
+    // Tabla pilotos
+    const pilotTable=`
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar"><h3> Campeonato de Pilotos</h3></div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr>
+            <th class="c">POS</th><th class="c">N°</th><th>Piloto</th>
+            <th>Escudería</th><th class="c r">PTS</th><th class="c r">DIFF</th>
+          </tr></thead>
+          <tbody>${pSorted.map((p,i)=>{
+            const eid=PE[+p.id]??1;const col=tcol(eid);
+            const pts=pPts[p.id]??0;
+            const diff=i===0?'—':`-${p1-pts}`;
+            const rc=i===0?'rk1':i===1?'rk2':i===2?'rk3':'';
+            return`<tr class="${rc}">
+              <td class="c">${posBadge(i)}</td>
+              <td class="c"><span class="dnum" style="background:${col}22;color:${col}">${p.numero}</span></td>
+              <td><span class="tbar" style="background:${col}"></span><strong>${p.nombre}</strong> ${p.apellido?.toUpperCase()}</td>
+              <td style="color:${col};font-weight:700;font-size:.78rem">${tn(eid)}</td>
+              <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
+              <td class="c r"><span class="${i===0?'':'gap'}">${diff}</span></td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>
+      </div>`;
+    // Tabla constructores
+    const autoByEsc=eid=>autos.find(a=>+a.escuderiaId===eid);
+    const constTable=`
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar"><h3>Campeonato de Constructores</h3></div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr>
+            <th class="c">POS</th><th>Escudería</th><th>Auto</th>
+            <th class="c r">PTS</th><th class="c r">DIFF</th>
+          </tr></thead>
+          <tbody>${eSorted.map((e,i)=>{
+            const col=tcol(e.id);const pts=tPts[+e.id]??0;
+            const auto=autoByEsc(+e.id);
+            const diff=i===0?'—':`-${e1-pts}`;
+            const rc=i===0?'rk1':i===1?'rk2':i===2?'rk3':'';
+            return`<tr class="${rc}">
+              <td class="c">${posBadge(i)}</td>
+              <td><span class="tbar" style="background:${col}"></span><strong style="color:${col}">${e.nombre}</strong></td>
+              <td style="font-size:.76rem">${auto?.nombre??'-'}</td>
+              <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
+              <td class="c r"><span class="${i===0?'':'gap'}">${diff}</span></td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table></div>
+      </div>`;
+    document.getElementById('clas-content').innerHTML=pilotTable+constTable;
+  }catch(e){document.getElementById('clas-content').innerHTML=`<p style="color:#f87171;padding:1rem">Error: ${e.message}</p>`;}
+}
+
+// ─── NOTICIAS ──────────────────────────────────────────────────
+async function loadNoticias(){
+  const c=document.getElementById('noticias-c');
+  try{
+    const noticias=await getAll('noticias');
+    noticias.sort((a,b)=>new Date(b.fechaPublicacion)-new Date(a.fechaPublicacion));
+    c.innerHTML=`<div class="ngrid">${noticias.map(n=>{
+      const col=n.escuderiaColor??'#e8002d';
+      const f=n.fechaPublicacion?fmtFecha(n.fechaPublicacion+'T00:00Z'):'';
+      return`<div class="nc">
+        <div class="nc-hero" style="background:linear-gradient(135deg,${col}2a,${col}06,#050505)">
+          <div class="nc-em">${n.emoji??'📰'}</div>
+          <div class="nc-cat">${n.categoria??'F1 2025'}</div>
+        </div>
+        <div class="nc-body">
+          <div class="nc-title">${n.titulo}</div>
+          <div class="nc-desc">${n.descripcion}</div>
+        </div>
+        <div class="nc-foot">
+          <span class="nc-date">📅 ${f}</span>
+          ${n.url?`<a class="nc-link" href="${n.url}" target="_blank" rel="noopener">Leer más →</a>`:''}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }catch(e){c.innerHTML=`<p style="color:#f87171;padding:1rem">Error: ${e.message}</p>`;}
+}
+
+// INICIO
+nav('home');
+</script>
+</body>
+</html>
