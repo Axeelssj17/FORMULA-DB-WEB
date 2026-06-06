@@ -21,7 +21,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--dark);color:var(-
 
 /* VIDEO FONDO */
 #vbg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-#vbg video{width:100%;height:100%;object-fit:cover;filter:brightness(.2) saturate(.6);transition:filter .7s}
+#vbg video{width:100%;height:100%;object-fit:cover;filter:brightness(.4) saturate(.6);transition:filter .7s}
 body.inner #vbg video{filter:brightness(.12) saturate(.4)}
 
 /* NAVBAR */
@@ -149,12 +149,28 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
 .tag-dsq{padding:1px 5px;border-radius:3px;font-size:.62rem;font-weight:800;
   background:rgba(255,200,0,.12);color:#ffd700}
 
+/* ═══ PILOT CARDS GRID ════════════════════════════════════════════ */
+.pilot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.7rem;margin-top:.5rem}
+.pilot-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  display:flex;align-items:center;gap:.85rem;padding:.7rem 1rem;
+  transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);overflow:hidden;position:relative}
+.pilot-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.pilot-card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.pc-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.88rem;
+  min-width:36px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pc-info{flex:1;min-width:0}
+.pc-name{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-team{font-size:.68rem;font-weight:600;margin-top:.1rem}
+.pc-meta{font-size:.62rem;color:var(--muted);margin-top:.08rem}
+.pc-pts{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.05rem;text-align:right;flex-shrink:0}
+.pc-pts-lbl{font-size:.55rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;text-align:right;margin-top:.1rem}
+
 /* ═══ CALENDAR / RESULTS CARDS ═══════════════════════════════════ */
-.gp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem}
+.gp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.85rem}
 .gp-card{background:var(--card);border:1px solid var(--border);
   border-radius:var(--r);overflow:hidden;transition:transform var(--ease),box-shadow var(--ease)}
 .gp-card:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.5)}
-.gp-card-head{padding:1rem 1.15rem .85rem;display:flex;gap:.85rem;align-items:flex-start;
+.gp-card-head{padding:.75rem 1rem .65rem;display:flex;gap:.75rem;align-items:flex-start;
   border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden}
 .gp-dblock{display:flex;flex-direction:column;align-items:center;min-width:50px;text-align:center}
 .gp-days{font-family:'Orbitron',sans-serif;font-size:1.15rem;font-weight:900;color:var(--red);line-height:1}
@@ -170,13 +186,13 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
   letter-spacing:.3px;text-transform:uppercase;background:rgba(232,0,45,.2);
   color:#ff7070;border:1px solid rgba(232,0,45,.3)}
 .gp-sessions{padding:.3rem 0}
-.sess{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.15rem;
+.sess{display:flex;align-items:center;gap:.5rem;padding:.38rem 1rem;
   border-bottom:1px solid rgba(255,255,255,.025);transition:background var(--ease)}
 .sess:last-child{border-bottom:none}
 .sess.click{cursor:pointer}
 .sess.click:hover{background:rgba(232,0,45,.08)}
 .sess.race-s{background:rgba(232,0,45,.04)}
-.sess-lbl{flex:1;font-size:.74rem;font-weight:700}
+.sess-lbl{flex:1;font-size:.7rem;font-weight:700}
 .sess.race-s .sess-lbl{color:var(--red)}
 .sess-day{font-size:.62rem;color:var(--muted);font-weight:600;min-width:28px;text-align:center}
 .sess-time{font-size:.72rem;font-weight:700;font-family:monospace;
@@ -282,13 +298,14 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
   .wrap{padding:1.5rem 1rem 3rem}
   .gp-grid{grid-template-columns:1fr}
 }
+@media(min-width:1400px){.gp-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:520px){.hstats{gap:.55rem}}
 </style>
 </head>
 <body>
 
 <div id="vbg"><video autoplay muted loop playsinline>
-  <source src="Intro_F1_Edit_Corto.mp4" type="video/mp4"/>
+  <source src="Assets/Intro Oficial Formula 1.mp4" type="video/mp4"/>
 </video></div>
 
 <nav>
@@ -298,12 +315,19 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
     <li><a href="#" id="nl-pilotos"    onclick="nav('pilotos');return false"               >Pilotos</a></li>
     <li><a href="#" id="nl-escuderias" onclick="nav('escuderias');return false"            >Escuderías</a></li>
     <li><a href="#" id="nl-clas"       onclick="nav('clas');return false"                  >Clasificación</a></li>
-    <li><a href="#" id="nl-calendario" onclick="nav('calendario');return false"            >Calendario</a></li>
-    <li><a href="#" id="nl-resultados" onclick="nav('resultados');return false"            >Resultados</a></li>
+    <li><a href="#" id="nl-calendario" onclick="nav('calendario');return false"            >Calendario y Resultados</a></li>
     <li><a href="#" id="nl-noticias"   onclick="nav('noticias');return false"              >Noticias</a></li>
-    <li><a href="#" id="nl-stats"      onclick="nav('stats');return false"                 >📊 Power BI</a></li>
+    <li><a href="#" id="nl-stats"      onclick="nav('stats');return false"                 >Power BI</a></li>
   </ul>
   <div class="nav-right">
+    <a href="https://open.spotify.com/playlist/00L6YaFg8TlZC30ktupQGQ?si=fc99d39869954cc1" target="_blank" rel="noopener"
+      style="display:inline-flex;align-items:center;gap:.4rem;padding:6px 12px;border-radius:20px;
+      background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);
+      color:#1DB954;font-size:.72rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap"
+      onmouseover="this.style.background='rgba(29,185,84,.22)'" onmouseout="this.style.background='rgba(29,185,84,.12)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+       Playlist
+    </a>
     <img id="user-av" src="" alt=""/>
     <button id="btn-login" onclick="openL()">
       <svg width="14" height="14" viewBox="0 0 24 24">
@@ -324,54 +348,64 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
 <div class="section active" id="sec-home">
   <div class="hero">
     <div class="hero-badge">🏁 Temporada 2025 · Finalizada</div>
-    <img src="FDB.png" alt="FórmulaDB" class="hero-logo"/>
-    <p class="hero-sub">Sistema de Gestión, Información y Análisis de F1</p>
-    <div class="hstats">
-      <div class="hs"><div class="hs-v" style="color:var(--t1)">🏆</div><div class="hs-l">Norris Campeón</div></div>
-      <div class="hs"><div class="hs-v">24</div><div class="hs-l">Grands Prix</div></div>
-      <div class="hs"><div class="hs-v">21</div><div class="hs-l">Pilotos</div></div>
-      <div class="hs"><div class="hs-v">6</div><div class="hs-l">Sprints</div></div>
+    <div style="line-height:1;margin-bottom:.2rem">
+      <div style="font-family:'Orbitron',sans-serif;font-size:clamp(3.5rem,9vw,7rem);font-weight:900;
+        letter-spacing:4px;text-transform:uppercase;color:#fff;
+        text-shadow:0 0 40px rgba(232,0,45,.4),0 0 80px rgba(232,0,45,.15)">FÓRMULA</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:clamp(3.5rem,9vw,7rem);font-weight:900;
+        letter-spacing:4px;text-transform:uppercase;
+        background:linear-gradient(135deg,#ff6b9d,#ff8fab,#ffb3c6);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        text-shadow:none">DB</div>
     </div>
-    <div class="hero-btns">
+    <p class="hero-sub">Sistema de Gestión, Información y Análisis de Fórmula 1</p>
+    <div class="hstats">
+
+      <div class="hs"><div class="hs-v" style="color:var(--red)">24</div><div class="hs-l">Grandes Premios</div></div>
+      <div class="hs"><div class="hs-v" style="color:var(--red)">21</div><div class="hs-l">Pilotos</div></div>
+      <div class="hs"><div class="hs-v" style="color:var(--red)">6</div><div class="hs-l">Sprints</div></div>
+
+    </div>
+
+
+<!--      <div class="hero-btns">
       <button class="btn btn-r" onclick="nav('pilotos')">🏎 Pilotos</button>
-      <button class="btn btn-g" onclick="nav('clas')">🏆 Clasificación</button>
+      <button class="btn btn-g" onclick="nav('escuderias')">🏎 Escuderías</button>
       <button class="btn btn-g" onclick="nav('calendario')">📅 Calendario</button>
       <button class="btn btn-g" onclick="nav('resultados')">📊 Resultados</button>
     </div>
+  </div> -->
+
+
+
+ <!-- Power BI embed en home 
+  <div style="padding:0 2rem 3rem;max-width:1380px;margin:0 auto;width:100%">
+    <div class="pbi-wrap">
+      <div class="pbi-top">📊 &nbsp; ESTADÍSTICAS CAMPEONATO F1 2025 · POWER BI INTERACTIVO</div>
+      <iframe title="Promedios_Campeonato"
+        src="https://app.powerbi.com/reportEmbed?reportId=af79e798-4811-4c7d-99a6-5e305e151028&autoAuth=true&ctid=e13f1e52-6e32-4972-82ca-697420ee3c98&actionBarEnabled=true"
+        allowfullscreen="true"></iframe>
+    </div>
   </div>
-</div>
+</div> -->
+
+
+
 
 <!-- ══ PILOTOS ══════════════════════════════════════════════════ -->
 <div class="section" id="sec-pilotos">
   <div class="wrap">
     <div class="ph">
-      <h1>Pilotos <span style="font-size:.48em;color:var(--muted)">F1 2025</span></h1>
+      <h1>Pilotos</h1>
       <span class="ln"></span>
-      <p>Grilla completa · Campeón: <strong style="color:var(--t1)">Lando Norris (McLaren)</strong></p>
+      <p>Campeón: <strong style="color:var(--t1)">Lando Norris (McLaren)</strong></p>
     </div>
     <div class="srow" id="pilot-stats"></div>
-    <div class="tbl-wrap">
-      <div class="tbl-head-bar">
-        <h3>🏎 Todos los Pilotos — Temporada 2025</h3>
-        <span>21 pilotos · ordenados por número de asiento</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table>
-          <thead>
-            <tr>
-              <th class="c">#</th>
-              <th class="c">N°</th>
-              <th>Piloto</th>
-              <th>Escudería</th>
-              <th>País</th>
-              <th class="c">Edad</th>
-              <th class="c r">Puntos</th>
-            </tr>
-          </thead>
-          <tbody id="pilotos-tbody"></tbody>
-        </table>
-      </div>
+    <div class="tbl-head-bar" style="border-radius:14px 14px 0 0;margin-bottom:0">
+      <h3>🏎 Todos los Pilotos — Temporada 2025</h3>
+      <span>21 pilotos · orden por N° de asiento</span>
     </div>
+    <div class="pilot-grid" id="pilotos-grid"></div>
   </div>
 </div>
 
@@ -379,13 +413,13 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
 <div class="section" id="sec-escuderias">
   <div class="wrap">
     <div class="ph">
-      <h1>Escuderías <span style="font-size:.48em;color:var(--muted)">F1 2025</span></h1>
+      <h1>Escuderías</h1>
       <span class="ln"></span>
       <p>Campeonato de Constructores · Campeón: <strong style="color:var(--t1)">McLaren Formula 1 Team</strong></p>
     </div>
     <div class="tbl-wrap">
       <div class="tbl-head-bar">
-        <h3>🏆 Escuderías — Temporada 2025</h3>
+        <h3>Temporada 2025</h3>
         <span>10 equipos · ordenados por puntos</span>
       </div>
       <div style="overflow-x:auto">
@@ -412,9 +446,9 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
 <div class="section" id="sec-clas">
   <div class="wrap">
     <div class="ph">
-      <h1>Clasificación <span style="font-size:.48em;color:var(--muted)">Final 2025</span></h1>
+      <h1>Clasificación </h1>
       <span class="ln"></span>
-      <p>Standings finales del Campeonato Mundial de Fórmula 1 · 2025</p>
+      <p>Campeonato Mundial de Fórmula 1 · 2025</p>
     </div>
     <div class="srow" id="clas-stats"></div>
     <div class="clas-grid" id="clas-content">
@@ -427,9 +461,9 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
 <div class="section" id="sec-calendario">
   <div class="wrap">
     <div class="ph">
-      <h1>Calendario <span style="font-size:.48em;color:var(--muted)">F1 2025</span></h1>
+      <h1>Calendario y Resultados</h1>
       <span class="ln"></span>
-      <p>24 Grandes Premios · 6 fines de semana Sprint · Horarios UTC</p>
+      <p>Horario (UTC-3:00) Ciudad de Buenos Aires</p>
     </div>
     <div class="srow" style="margin-bottom:1.5rem">
       <div class="sb" style="--ac:var(--red)"><div class="sb-v">24</div><div class="sb-l">GP Total</div></div>
@@ -869,7 +903,7 @@ async function loadClasificacion(){
     // Tabla pilotos
     const pilotTable=`
       <div class="tbl-wrap">
-        <div class="tbl-head-bar"><h3>🏎 Campeonato de Pilotos</h3><span>Temporada 2025 · Final</span></div>
+        <div class="tbl-head-bar"><h3> Campeonato de Pilotos</h3></div>
         <div style="overflow-x:auto"><table>
           <thead><tr>
             <th class="c">POS</th><th class="c">N°</th><th>Piloto</th>
@@ -895,7 +929,7 @@ async function loadClasificacion(){
     const autoByEsc=eid=>autos.find(a=>+a.escuderiaId===eid);
     const constTable=`
       <div class="tbl-wrap">
-        <div class="tbl-head-bar"><h3>🏆 Campeonato de Constructores</h3><span>Temporada 2025 · Final</span></div>
+        <div class="tbl-head-bar"><h3>Campeonato de Constructores</h3></div>
         <div style="overflow-x:auto"><table>
           <thead><tr>
             <th class="c">POS</th><th>Escudería</th><th>Auto</th>
