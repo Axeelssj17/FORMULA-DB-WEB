@@ -417,28 +417,8 @@ tbody tr.rk3 td{background:rgba(205,127,50,.04)}
       <span class="ln"></span>
       <p>Campeonato de Constructores · Campeón: <strong style="color:var(--t1)">McLaren Formula 1 Team</strong></p>
     </div>
-    <div class="tbl-wrap">
-      <div class="tbl-head-bar">
-        <h3>Temporada 2025</h3>
-        <span>10 equipos · ordenados por puntos</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table>
-          <thead>
-            <tr>
-              <th class="c">POS</th>
-              <th>Escudería</th>
-              <th>País</th>
-              <th>Auto</th>
-              <th>Motor</th>
-              <th>Pilotos</th>
-              <th class="c r">Puntos</th>
-            </tr>
-          </thead>
-          <tbody id="esc-tbody"></tbody>
-        </table>
-      </div>
-    </div>
+    <div class="srow" id="esc-stats"></div>
+    <div class="pilot-grid" id="esc-grid"></div>
   </div>
 </div>
 
@@ -822,13 +802,13 @@ function renderRes(){
     Object.keys(byR).map(Number).sort((a,b)=>a-b).map(r=>buildCard(r,byR[r],true)).join('');
 }
 
-// ─── PILOTOS (tabla) ───────────────────────────────────────────
+// ─── PILOTOS (cards grid) ──────────────────────────────────────
 async function loadPilotos(){
   try{
     const [pilotos,res]=await Promise.all([getAll('pilotos'),getAll('resultadosRonda')]);
     const ptsMap={};
     res.forEach(r=>{ptsMap[r.pilotoId]=(ptsMap[r.pilotoId]??0)+(+r.puntos||0);});
-    pilotos.sort((a,b)=>+a.numero-+b.numero); // ordenar por número asiento
+    pilotos.sort((a,b)=>+a.numero-+b.numero);
     const sorted=[...pilotos].sort((a,b)=>(ptsMap[b.id]??0)-(ptsMap[a.id]??0));
     const p1=ptsMap[sorted[0]?.id]??0, p2=ptsMap[sorted[1]?.id]??0;
     const eid1=PE[+sorted[0]?.id]??1;
@@ -837,50 +817,82 @@ async function loadPilotos(){
       <div class="sb" style="--ac:var(--red)"><div class="sb-v" style="color:var(--red)">+${p1-p2}</div><div class="sb-l">Ventaja vs 2°</div></div>
       <div class="sb"><div class="sb-v">${pilotos.length}</div><div class="sb-l">Pilotos</div></div>
       <div class="sb" style="--ac:var(--t3)"><div class="sb-v">10</div><div class="sb-l">Escuderías</div></div>`;
-    // Tabla con orden por número asiento
-    document.getElementById('pilotos-tbody').innerHTML=pilotos.map(p=>{
+    document.getElementById('pilotos-grid').innerHTML=pilotos.map(p=>{
       const eid=PE[+p.id]??1; const col=tcol(eid); const team=tn(eid);
       const pts=ptsMap[p.id]??0;
-      return`<tr>
-        <td class="c"><span class="dnum" style="background:${col}22;color:${col}">${p.numero}</span></td>
-        <td class="c"><span class="tbar" style="background:${col}"></span></td>
-        <td><strong>${p.nombre}</strong> ${p.apellido?.toUpperCase()}</td>
-        <td><span style="color:${col};font-weight:700">${team}</span></td>
-        <td>${p.pais}</td>
-        <td class="c">${p.edad}</td>
-        <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
-      </tr>`;
+      return`<div class="pilot-card" style="--ac:${col};border-color:${col}22"
+        onmouseover="this.style.borderColor='${col}66'" onmouseout="this.style.borderColor='${col}22'">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${col};border-radius:3px 0 0 3px"></div>
+        <div class="pc-num" style="background:${col}22;color:${col}">${p.numero}</div>
+        <div class="pc-info">
+          <div class="pc-name"><strong>${p.nombre}</strong> ${(p.apellido??'').toUpperCase()}</div>
+          <div class="pc-team" style="color:${col}">${team}</div>
+          <div class="pc-meta">${p.pais??''} · ${p.edad??''} años</div>
+        </div>
+        <div>
+          <div class="pc-pts" style="color:${col}">${pts}</div>
+          <div class="pc-pts-lbl">pts</div>
+        </div>
+      </div>`;
     }).join('');
-  }catch(e){document.getElementById('pilotos-tbody').innerHTML=`<tr><td colspan="7" style="color:#f87171;padding:1rem">Error: ${e.message}</td></tr>`;}
+  }catch(e){document.getElementById('pilotos-grid').innerHTML=`<p style="color:#f87171;padding:1rem">Error: ${e.message}</p>`;}
 }
 
-// ─── ESCUDERÍAS (tabla) ────────────────────────────────────────
+// ─── ESCUDERÍAS (cards) ────────────────────────────────────────
 async function loadEscuderias(){
   try{
-    const [esc,pilotos,autos,res]=await Promise.all([getAll('escuderias'),getAll('pilotos'),getAll('autos'),getAll('resultadosRonda')]);
-    const pPts={};res.forEach(r=>{pPts[r.pilotoId]=(pPts[r.pilotoId]??0)+(+r.puntos||0);});
-    const tPts={};pilotos.forEach(p=>{const e=PE[+p.id]??1;tPts[e]=(tPts[e]??0)+(pPts[p.id]??0);});
+    const [esc,pilotos,autos,res]=await Promise.all([
+      getAll('escuderias'),getAll('pilotos'),getAll('autos'),getAll('resultadosRonda')
+    ]);
+    const pPts={};
+    res.forEach(r=>{pPts[r.pilotoId]=(pPts[r.pilotoId]??0)+(+r.puntos||0);});
+    const tPts={};
+    pilotos.forEach(p=>{const e=PE[+p.id]??1;tPts[e]=(tPts[e]??0)+(pPts[p.id]??0);});
     esc.sort((a,b)=>(tPts[+b.id]??0)-(tPts[+a.id]??0));
-    const drsByEsc=eid=>pilotos.filter(p=>PE[+p.id]===eid).map(p=>`${p.nombre} ${p.apellido}`).join(' & ');
+
+    const drsByEsc=eid=>pilotos
+      .filter(p=>PE[+p.id]===eid)
+      .map(p=>`${p.nombre} ${p.apellido}`)
+      .join(' & ');
     const autoByEsc=eid=>autos.find(a=>+a.escuderiaId===eid);
-    document.getElementById('esc-tbody').innerHTML=esc.map((e,i)=>{
-      const col=tcol(e.id); const pts=tPts[+e.id]??0; const auto=autoByEsc(+e.id);
-      const rowCls=i===0?'rk1':i===1?'rk2':i===2?'rk3':'';
-      return`<tr class="${rowCls}">
-        <td class="c">${posBadge(i)}</td>
-        <td>
-          <span class="tbar" style="background:${col}"></span>
-          <strong style="color:${col}">${e.nombre}</strong>
-        </td>
-        <td>${e.pais}</td>
-        <td>${auto?.nombre??'-'}</td>
-        <td style="font-size:.76rem;color:var(--muted)">${auto?.motor??'-'}</td>
-        <td style="font-size:.76rem">${drsByEsc(+e.id)}</td>
-        <td class="c r"><span class="pts" style="color:${col}">${pts}</span></td>
-      </tr>`;
+
+    const e1pts=tPts[+esc[0]?.id]??0;
+    const e2pts=tPts[+esc[1]?.id]??0;
+    const col1=tcol(esc[0]?.id);
+    document.getElementById('esc-stats').innerHTML=`
+      <div class="sb" style="--ac:${col1}"><div class="sb-v" style="color:${col1}">${e1pts}</div><div class="sb-l">Puntos Campeón</div></div>
+      <div class="sb" style="--ac:var(--red)"><div class="sb-v" style="color:var(--red)">+${e1pts-e2pts}</div><div class="sb-l">Ventaja vs 2°</div></div>
+      <div class="sb"><div class="sb-v">${esc.length}</div><div class="sb-l">Escuderías</div></div>
+      <div class="sb" style="--ac:var(--t3)"><div class="sb-v">21</div><div class="sb-l">Pilotos</div></div>`;
+
+    const posLabel=['1°','2°','3°','4°','5°','6°','7°','8°','9°','10°'];
+
+    document.getElementById('esc-grid').innerHTML=esc.map((e,i)=>{
+      const col=tcol(e.id);
+      const pts=tPts[+e.id]??0;
+      const auto=autoByEsc(+e.id);
+      const pilotsStr=drsByEsc(+e.id);
+      return`<div class="pilot-card" style="--ac:${col};border-color:${col}22"
+        onmouseover="this.style.borderColor='${col}66'" onmouseout="this.style.borderColor='${col}22'">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${col};border-radius:3px 0 0 3px"></div>
+        <div class="pc-num" style="background:${col}22;color:${col}">${posLabel[i]??i+1+'°'}</div>
+        <div class="pc-info">
+          <div class="pc-name"><strong style="color:${col}">${e.nombre}</strong></div>
+          <div class="pc-team" style="color:var(--muted)">${e.pais} &nbsp;·&nbsp; ${auto?.nombre??'-'} &nbsp;·&nbsp; ${auto?.motor??'-'}</div>
+          <div class="pc-meta">${pilotsStr}</div>
+        </div>
+        <div>
+          <div class="pc-pts" style="color:${col}">${pts}</div>
+          <div class="pc-pts-lbl">pts</div>
+        </div>
+      </div>`;
     }).join('');
-  }catch(e){document.getElementById('esc-tbody').innerHTML=`<tr><td colspan="7" style="color:#f87171;padding:1rem">Error: ${e.message}</td></tr>`;}
+
+  }catch(e){
+    document.getElementById('esc-grid').innerHTML=`<p style="color:#f87171;padding:1rem">Error: ${e.message}</p>`;
+  }
 }
+
 
 // ─── CLASIFICACIÓN (pilotos + constructores, tablas) ────────────
 async function loadClasificacion(){
